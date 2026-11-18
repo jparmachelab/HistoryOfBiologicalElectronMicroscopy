@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Timeline of Cryo-Electron Microscopy (v1.01)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+        }
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #4f46e5, #0d9488, #0284c7, #f59e0b);
+            z-index: 0;
+            border-radius: 4px;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            transform: translate(-50%, 28px);
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background-color: #4f46e5;
+            border: 4px solid white;
+            z-index: 10;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
+            transition: all 0.3s ease;
+        }
+        .timeline-dot.highlight {
+            background-color: #f59e0b;
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.4);
+            width: 26px;
+            height: 26px;
+        }
+        .timeline-dot.stain {
+            background-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.35);
+        }
+        .timeline-dot.software {
+            background-color: #0d9488;
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.35);
+        }
+        .timeline-dot.resolution {
+            background-color: #0284c7;
+            box-shadow: 0 0 0 5px rgba(2, 132, 199, 0.35);
+            width: 26px;
+            height: 26px;
+        }
+        @media (max-width: 768px) {
+            .timeline-line { left: 24px; }
+            .timeline-dot { left: 24px; }
+        }
+        .reveal {
+            opacity: 0;
+            transform: translateY(25px);
+            transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .ref-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 14px;
+        }
+        .justify-end-md {
+            justify-content: flex-start;
+        }
+        @media (min-width: 768px) {
+            .justify-end-md {
+                justify-content: flex-end;
+            }
+        }
+        .ref-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            background-color: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.72rem;
+            border-radius: 6px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+            transition: all 0.2s ease;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        a.ref-badge:hover {
+            background-color: #eff6ff;
+            color: #1d4ed8;
+            border-color: #93c5fd;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(59, 130, 246, 0.12);
+        }
+        .ref-badge svg {
+            margin-left: 5px;
+            width: 11px;
+            height: 11px;
+        }
+        .pillar-tag {
+            display: inline-block;
+            margin-left: 8px;
+            padding: 2px 8px;
+            background-color: #0284c7;
+            color: #ffffff;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            border-radius: 9999px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased overflow-x-hidden min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-16">
+
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <span class="inline-block px-3 py-1 mb-3 text-xs font-bold tracking-wider uppercase text-sky-700 bg-sky-100 rounded-full border border-sky-200">
+                Version 1.01
+            </span>
+            <h1 class="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-sky-600 to-amber-500 mb-4 pb-2">
+                The History of Cryo-EM
+            </h1>
+            <p class="text-lg md:text-xl text-slate-500 max-w-3xl mx-auto leading-relaxed">
+                Tracing foundational discoveries, negative staining, pioneering software suites, phase plates, and the 2012–2013 Resolution Revolution.
+            </p>
+        </div>
+
+        <!-- Category Legend -->
+        <div class="flex flex-wrap justify-center gap-3 mb-8 text-xs font-semibold">
+            <span class="px-3 py-1.5 rounded-full bg-indigo-600 text-white">Foundational &amp; Hardware</span>
+            <span class="px-3 py-1.5 rounded-full bg-violet-600 text-white">Negative Staining</span>
+            <span class="px-3 py-1.5 rounded-full bg-teal-600 text-white">Software &amp; Algorithms</span>
+            <span class="px-3 py-1.5 rounded-full bg-sky-600 text-white">Resolution Revolution Convergence</span>
+            <span class="px-3 py-1.5 rounded-full bg-amber-500 text-white">Nobel Prizes &amp; Major Honors</span>
+        </div>
+
+        <!-- View Mode Toggle -->
+        <div class="flex justify-center mb-16">
+            <div class="bg-white rounded-full p-1 shadow-md border border-slate-200 inline-flex relative z-20">
+                <button id="btn-simple" class="px-6 py-2 rounded-full text-sm font-semibold transition-colors duration-300" onclick="setMode('simple')">
+                    Simple View
+                </button>
+                <button id="btn-detail" class="px-6 py-2 rounded-full text-sm font-semibold transition-colors duration-300" onclick="setMode('detail')">
+                    Detailed View (All 44 Milestones)
+                </button>
+            </div>
+        </div>
+
+        <!-- Timeline Container -->
+        <div class="relative w-full pb-20">
+            <div class="timeline-line hidden md:block"></div>
+            <div class="timeline-line block md:hidden"></div>
+            <div id="timeline-container" class="space-y-6 md:space-y-4"></div>
+        </div>
+    </div>
+
+    <script>
+        const eventsData = [
+            {
+                year: "1931",
+                title: "Ruska & Knoll: Invention of Electron Microscope",
+                desc: "Max Knoll and Ernst Ruska co-invented and experimentally demonstrated the first transmission electron microscope using magnetic lenses, establishing the physical foundation for sub-optical imaging.",
+                visibility: "all",
+                type: "standard",
+                refs: [
+                    { label: "DOI: 10.1007/BF01342199", url: "https://doi.org/10.1007/BF01342199" }
+                ]
+            },
+            {
+                year: "1934",
+                title: "Marton: Proposes Cooling or Staining of Bio Samples",
+                desc: "Ladislaus Marton demonstrated early electron microscopy of biological objects, noting their rapid destruction under intense electron bombardment and proposing specimen cooling or heavy-metal impregnation to preserve structure.",
+                visibility: "detail",
+                type: "standard",
+                refs: [
+                    { label: "DOI: 10.1038/133911a0", url: "https://doi.org/10.1038/133911a0" }
+                ]
+            },
+            {
+                year: "1937",
+                title: "Luyet: Rapid Freezing for Water Preservation",
+                desc: "Basile Luyet proposed that ultra-rapid cooling could solidify aqueous solutions directly into an amorphous, glass-like (vitrified) state, avoiding the destructive formation of crystalline ice.",
+                visibility: "detail",
+                type: "standard",
+                refs: [
+                    { label: "PMID: 16787831", url: "https://pubmed.ncbi.nlm.nih.gov/16787831/" },
+                    { label: "DOI: 10.1016/j.tmrv.2006.03.004", url: "https://doi.org/10.1016/j.tmrv.2006.03.004" }
+                ]
+            },
+            {
+                year: "1940s–1959",
+                title: "Early Negative Staining & KPT Method",
+                desc: "Building on reverse-contrast observations by Cecil Hall (1955) and Hugh Huxley (1956), Sydney Brenner and Robert Horne (1957–1959) neutralized phosphotungstic acid with KOH (KPT) to embed intact viruses in an electron-dense glass without lysis, coining 'Negative Staining'.",
+                visibility: "all",
+                type: "stain",
+                refs: [
+                    { label: "PMID: 14381423", url: "https://pubmed.ncbi.nlm.nih.gov/14381423/" },
+                    { label: "PMCID: PMC2223598", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC2223598/" },
+                    { label: "PMID: 13804200", url: "https://pubmed.ncbi.nlm.nih.gov/13804200/" },
+                    { label: "DOI: 10.1016/0006-3002(59)90237-9", url: "https://doi.org/10.1016/0006-3002(59)90237-9" },
+                    { label: "DOI: 10.1016/0739-6260(91)90051-Z", url: "https://doi.org/10.1016/0739-6260(91)90051-Z" }
+                ]
+            },
+            {
+                year: "1953",
+                title: "Fernández-Morán: Freezing and Thin Sections",
+                desc: "Humberto Fernández-Morán invented the diamond knife and pioneered ultrathin sectioning of frozen unembedded biological tissues for low-temperature electron microscopy.",
+                visibility: "detail",
+                type: "standard",
+                refs: [
+                    { label: "PMID: 13083636", url: "https://pubmed.ncbi.nlm.nih.gov/13083636/" },
+                    { label: "DOI: 10.1016/0014-4827(53)90112-8", url: "https://doi.org/10.1016/0014-4827(53)90112-8" }
+                ]
+            },
+            {
+                year: "1954",
+                title: "Siemens Elmiskop I",
+                desc: "Demonstrated at the 1954 London Congress and installed at the Cavendish Laboratory in Cambridge, the Siemens Elmiskop I delivered a major leap in resolving power, exposing granulation artifacts in metal-shadowed specimens and motivating superior specimen preparation.",
+                visibility: "detail",
+                type: "standard",
+                refs: [
+                    { label: "DOI: 10.1016/0739-6260(91)90051-Z", url: "https://doi.org/10.1016/0739-6260(91)90051-Z" },
+                    { label: "PMID: 3322421", url: "https://pubmed.ncbi.nlm.nih.gov/3322421/" }
+                ]
+            },
+            {
+                year: "1968",
+                title: "Klug & DeRosier: First 3D Model from 2D Projections",
+                desc: "David DeRosier and Aaron Klug formulated the Fourier-space central section theorem for electron micrographs and calculated the first three-dimensional structural reconstruction of the bacteriophage T4 tail.",
+                visibility: "all",
+                type: "standard",
+                refs: [
+                    { label: "PMID: 23610788", url: "https://pubmed.ncbi.nlm.nih.gov/23610788/" },
+                    { label: "DOI: 10.1038/217130a0", url: "https://doi.org/10.1038/217130a0" }
+                ]
+            },
+            {
+                year: "1969",
+                title: "Swanson & Crouser: Field Emission Gun Practical Development",
+                desc: "L.W. Swanson and L.C. Crouser advanced the practical physics and operation of tungsten field emission electron sources, paving the way for high-coherence Field Emission Guns (FEGs) essential for high-resolution phase-contrast cryo-EM.",
+                visibility: "detail",
+                type: "standard",
+                refs: [
+                    { label: "DOI: 10.1063/1.1657273", url: "https://doi.org/10.1063/1.1657273" }
+                ]
+            },
+            {
+                year: "1970",
+                title: "Common Lines Approach",
+                desc: "Tony Crowther, David DeRosier, and Aaron Klug introduced the 'common lines' method in Fourier space to determine the relative 3D orientations of 2D particle projections and reconstruct spherical viruses.",
+                visibility: "detail",
+                type: "standard",
+                refs: [
+                    { label: "DOI: 10.1098/rspa.1970.0119", url: "https://doi.org/10.1098/rspa.1970.0119" },
+                    { label: "PMID: 4314822", url: "https://pubmed.ncbi.nlm.nih.gov/4314822/" }
+                ]
+            },
+            {
+                year: "1971",
+                title: "Glaeser: Defining Radiation Damage and Low Dose",
+                desc: "Robert Glaeser quantified electron-induced radiation damage in biological specimens, proving that high-resolution structural imaging requires low-dose exposures combined with ensemble averaging over many identical molecules.",
+                visibility: "all",
+                type: "standard",
+                refs: [
+                    { label: "PMID: 5107051", url: "https://pubmed.ncbi.nlm.nih.gov/5107051/" },
+                    { label: "DOI: 10.1016/S0022-5320(71)80118-1", url: "https://doi.org/10.1016/S0022-5320(71)80118-1" }
+                ]
+            },
+            {
+                year: "1974",
+                title: "Parsons: Hydration Chamber for Wet Catalase Crystals",
+                desc: "Don Parsons engineered differentially pumped environmental hydration chambers that maintained liquid water inside the microscope column, demonstrating high-resolution electron diffraction from wet catalase crystals.",
+                visibility: "detail",
+                type: "standard",
+                refs: [
+                    { label: "PMID: 4213401", url: "https://pubmed.ncbi.nlm.nih.gov/4213401/" },
+                    { label: "DOI: 10.1126/science.186.4162.407", url: "https://doi.org/10.1126/science.186.4162.407" }
+                ]
+            },
+            {
+                year: "1974–1976",
+                title: "Taylor & Glaeser: First Images of Frozen-Hydrated Crystals",
+                desc: "Kenneth Taylor and Robert Glaeser demonstrated that freezing protein crystals in liquid nitrogen preserved high-resolution diffraction (1974) and obtained the first bright-field phase-contrast images of unstained, frozen-hydrated catalase crystals (1976).",
+                visibility: "all",
+                type: "standard",
+                refs: [
+                    { label: "PMID: 4469695", url: "https://pubmed.ncbi.nlm.nih.gov/4469695/" },
+                    { label: "DOI: 10.1126/science.186.4168.1036", url: "https://doi.org/10.1126/science.186.4168.1036" },
+                    { label: "PMID: 933264", url: "https://pubmed.ncbi.nlm.nih.gov/933264/" }
+                ]
+            },
+            {
+                year: "1975",
+                title: "Henderson & Unwin: Glucose Solution",
+                desc: "Richard Henderson and Nigel Unwin embedded unstained 2D crystals of purple membrane (bacteriorhodopsin) and catalase in glucose to preserve hydration in vacuum, combining low-dose imaging and diffraction to resolve transmembrane helices at 7 Å.",
+                visibility: "all",
+                type: "standard",
+                refs: [
+                    { label: "PMID: 1236957", url: "https://pubmed.ncbi.nlm.nih.gov/1236957/" },
+                    { label: "DOI: 10.1016/0022-2836(75)90212-0", url: "https://doi.org/10.1016/0022-2836(75)90212-0" }
+                ]
+            },
+            {
+                year: "1978",
+                title: "Frank: SPIDER Software Suite Developed",
+                desc: "Joachim Frank and colleagues developed SPIDER (System for Processing Image Data from Electron microscopy and Related fields), establishing one of the foundational modular software suites for single-particle image processing and 3D reconstruction.",
+                visibility: "detail",
+                type: "software",
+                refs: [
+                    { label: "SPIDER Repository", url: "https://github.com/spider-em/SPIDER" },
+                    { label: "PMID: 3514918", url: "https://pubmed.ncbi.nlm.nih.gov/3514918/" }
+                ]
+            },
+            {
+                year: "1979–1981",
+                title: "van Heel: IMAGIC Software Suite Developed",
+                desc: "Marin van Heel developed IMAGIC, pioneering Multivariate Statistical Analysis (MSA), automated particle classification, and later angular reconstitution for single-particle electron microscopy.",
+                visibility: "detail",
+                type: "software",
+                refs: [
+                    { label: "DOI: 10.1016/0304-3991(81)90001-2", url: "https://doi.org/10.1016/0304-3991(81)90001-2" },
+                    { label: "Ultramicroscopy 4, 117", url: "https://doi.org/10.1016/0304-3991(79)90040-6" }
+                ]
+            },
+            {
+                year: "1980",
+                title: "Mayer: Hyperquenched Vitreous Water",
+                desc: "Peter Brüggeller and Erwin Mayer proved that pure liquid water and dilute aqueous solutions could be completely vitrified into an amorphous solid by hyperquenching micron-sized droplets, overturning doubts about water vitrification.",
+                visibility: "detail",
+                type: "standard",
+                refs: [
+                    { label: "DOI: 10.1038/288569a0", url: "https://doi.org/10.1038/288569a0" }
+                ]
+            },
+            {
+                year: "1981–1982",
+                title: "Dubochet et al.: Practical Plunge-Freezing",
+                desc: "Jacques Dubochet, Alasdair McDowall, Marc Adrian, and Jean Lepault at EMBL Heidelberg established practical plunge-freezing of thin aqueous suspensions into liquid ethane or propane, creating thin, electron-transparent films of vitreous ice across EM grids.",
+                visibility: "all",
+                type: "standard",
+                refs: [
+                    { label: "DOI: 10.1111/j.1365-2818.1982.tb04625.x", url: "https://doi.org/10.1111/j.1365-2818.1982.tb04625.x" },
+                    { label: "DOI: 10.1016/0304-3991(82)90187-5", url: "https://doi.org/10.1016/0304-3991(82)90187-5" },
+                    { label: "PMID: 6186816", url: "https://pubmed.ncbi.nlm.nih.gov/6186816/" }
+                ]
+            },
+            {
+                year: "1984",
+                title: "Dubochet: Adenovirus in Vitrified Water",
+                desc: "Marc Adrian, Jacques Dubochet, Jean Lepault, and Alasdair McDowall published landmark micrographs of unstained adenovirus and other viral particles suspended in unsupported thin films of vitreous water across holey grids.",
+                visibility: "all",
+                type: "standard",
+                refs: [
+                    { label: "PMID: 6322001", url: "https://pubmed.ncbi.nlm.nih.gov/6322001/" },
+                    { label: "DOI: 10.1038/308032a0", url: "https://doi.org/10.1038/308032a0" },
+                    { label: "PMID: 3043536", url: "https://pubmed.ncbi.nlm.nih.gov/3043536/" }
+                ]
+            },
+            {
+                year: "1984",
+                title: "Taylor & Unwin: High-Resolution-Capable Cold Stage",
+                desc: "Kenneth Taylor, Ronald Milligan, C. Raeburn, and Nigel Unwin engineered a mechanically and thermally stable top-entry cold stage and frost-free cryo-transfer system for the Philips EM300, enabling 3D reconstructions of frozen-hydrated crystalline specimens.",
+                visibility: "detail",
+                type: "standard",
+                refs: [
+                    { label: "PMID: 6485128", url: "https://pubmed.ncbi.nlm.nih.gov/6485128/" },
+                    { label: "DOI: 10.1016/0304-3991(84)90197-9", url: "https://doi.org/10.1016/0304-3991(84)90197-9" }
+                ]
+            },
+            {
+                year: "1986",
+                title: "Ruska: Nobel Prize in Physics",
+                desc: "Ernst Ruska was awarded half of the 1986 Nobel Prize in Physics for his fundamental work in electron optics and for the design of the first electron microscope.",
+                visibility: "all",
+                type: "highlight",
+                refs: [
+                    { label: "PMID: 3322421", url: "https://pubmed.ncbi.nlm.nih.gov/3322421/" },
+                    { label: "DOI: 10.1007/BF01127674", url: "https://doi.org/10.1007/BF01127674" }
+                ]
+            },
+            {
+                year: "1986–1987",
+                title: "Frank & Radermacher: Random Conical Tilt",
+                desc: "Michael Radermacher, Terence Wagenknecht, Adriana Verschoor, and Joachim Frank developed the Random Conical Tilt (RCT) reconstruction method, solving the ab initio orientation problem for asymmetric single particles such as the 50S ribosomal subunit.",
+                visibility: "detail",
+                type: "standard",
+                refs: [
+                    { label: "PMID: 3514918", url: "https://pubmed.ncbi.nlm.nih.gov/3514918/" },
+                    { label: "DOI: 10.1111/j.1365-2818.1986.tb02693.x", url: "https://doi.org/10.1111/j.1365-2818.1986.tb02693.x" },
+                    { label: "PMID: 3302267", url: "https://pubmed.ncbi.nlm.nih.gov/3302267/" }
+                ]
+            },
+            {
+                year: "1990",
+                title: "Henderson: High-Resolution Structure of Bacteriorhodopsin",
+                desc: "Richard Henderson and colleagues determined the first near-atomic (3.5 Å) structural model of bacteriorhodopsin using electron cryo-microscopy of 2D crystals, proving that cryo-EM could resolve amino-acid side chains.",
+                visibility: "all",
+                type: "standard",
+                refs: [
+                    { label: "PMID: 2359127", url: "https://pubmed.ncbi.nlm.nih.gov/2359127/" },
+                    { label: "DOI: 10.1016/S0022-2836(05)80271-2", url: "https://doi.org/10.1016/S0022-2836(05)80271-2" }
+                ]
+            },
+            {
+                year: "1991",
+                title: "Frank: First 3D Reconstruction of Ribosome",
+                desc: "Joachim Frank, Pawel Penczek, Robert Grassucci, and S. Srivastava published the first three-dimensional cryo-EM reconstruction of the asymmetric 70S Escherichia coli ribosome embedded in vitreous ice.",
+                visibility: "detail",
+                type: "standard",
+                refs: [
+                    { label: "PMID: 1918155", url: "https://pubmed.ncbi.nlm.nih.gov/1918155/" },
+                    { label: "PMCID: PMC2289182", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC2289182/" }
+                ]
+            },
+            {
+                year: "1991",
+                title: "Gatan Releases Model 626 Holder",
+                desc: "Commercial introduction of the Gatan Model 626 high-resolution side-entry cryo-holder, allowing laboratories worldwide to perform routine cryo-EM without custom microscope stage modifications.",
+                visibility: "detail",
+                type: "standard",
+                refs: [
+                    { label: "PMID: 2063494", url: "https://pubmed.ncbi.nlm.nih.gov/2063494/" },
+                    { label: "DOI: 10.1016/0304-3991(91)90043-6", url: "https://doi.org/10.1016/0304-3991(91)90043-6" }
+                ]
+            },
+            {
+                year: "1995",
+                title: "Henderson: Atomic Resolution Prediction",
+                desc: "Richard Henderson published a physical analysis comparing electrons, X-rays, and neutrons, demonstrating theoretically that single-particle cryo-EM of unstained asymmetric macromolecules in vitreous ice could achieve atomic resolution (~3 Å).",
+                visibility: "detail",
+                type: "standard",
+                refs: [
+                    { label: "PMID: 7568675", url: "https://pubmed.ncbi.nlm.nih.gov/7568675/" },
+                    { label: "DOI: 10.1017/S003358350000305X", url: "https://doi.org/10.1017/S003358350000305X" }
+                ]
+            },
+            {
+                year: "1998",
+                title: "Sigworth: Maximum Likelihood in Single Particle Analysis",
+                desc: "Fred Sigworth introduced a maximum-likelihood statistical framework for aligning noisy single-particle images without bias toward a single reference, laying the mathematical groundwork for modern classification and refinement.",
+                visibility: "detail",
+                type: "standard",
+                refs: [
+                    { label: "PMID: 9774537", url: "https://pubmed.ncbi.nlm.nih.gov/9774537/" },
+                    { label: "DOI: 10.1006/jsbi.1998.4014", url: "https://doi.org/10.1006/jsbi.1998.4014" }
+                ]
+            },
+            {
+                year: "1998",
+                title: "Grigorieff: Frealign Software Suite Developed",
+                desc: "Nikolaus Grigorieff developed Frealign (Fourier REconstruction and ALignment), an optimized software package for high-resolution refinement and parameter optimization of 3D reconstructions from single-particle cryo-EM data.",
+                visibility: "detail",
+                type: "software",
+                refs: [
+                    { label: "PMID: 9533890", url: "https://pubmed.ncbi.nlm.nih.gov/9533890/" },
+                    { label: "DOI: 10.1006/jmbi.1998.1625", url: "https://doi.org/10.1006/jmbi.1998.1625" }
+                ]
+            },
+            {
+                year: "1999",
+                title: "Ludtke et al.: EMAN1 Software Suite Developed",
+                desc: "Steven J. Ludtke, Peter R. Baldwin, and Wah Chiu developed EMAN (EMAN1), a semi-automated software suite designed for high-resolution single-particle reconstructions using iterative projection matching.",
+                visibility: "detail",
+                type: "software",
+                refs: [
+                    { label: "PMID: 10600552", url: "https://pubmed.ncbi.nlm.nih.gov/10600552/" },
+                    { label: "DOI: 10.1006/jsbi.1999.4174", url: "https://doi.org/10.1006/jsbi.1999.4174" }
+                ]
+            },
+            {
+                year: "2003",
+                title: "Mastronarde: SerialEM Automated Acquisition",
+                desc: "David J. Mastronarde developed SerialEM, a widely adopted software application for automated tilt-series acquisition in electron tomography and multi-area automated screening in single-particle cryo-EM.",
+                visibility: "detail",
+                type: "software",
+                refs: [
+                    { label: "DOI: 10.1017/S1431927603445911", url: "https://doi.org/10.1017/S1431927603445911" }
+                ]
+            },
+            {
+                year: "2005",
+                title: "Leginon, Automated Data Collection Becomes Available",
+                desc: "Christian Suloway, Clinton Potter, Bridget Carragher, and colleagues introduced the Leginon system for automated, multi-scale target selection and high-throughput acquisition of single-particle micrographs.",
+                visibility: "detail",
+                type: "standard",
+                refs: [
+                    { label: "PMID: 15890530", url: "https://pubmed.ncbi.nlm.nih.gov/15890530/" },
+                    { label: "DOI: 10.1016/j.jsb.2005.03.010", url: "https://doi.org/10.1016/j.jsb.2005.03.010" }
+                ]
+            },
+            {
+                year: "2007",
+                title: "Tang & Ludtke: EMAN2 Software Suite Released",
+                desc: "Guang Tang, Li Peng, Peter R. Baldwin, Daniel S. Mann, Wen Jiang, Ian Rees, and Steven J. Ludtke released EMAN2, an extensible, object-oriented Python-based image processing suite for electron microscopy.",
+                visibility: "detail",
+                type: "software",
+                refs: [
+                    { label: "PMID: 16859925", url: "https://pubmed.ncbi.nlm.nih.gov/16859925/" },
+                    { label: "DOI: 10.1016/j.jsb.2006.05.009", url: "https://doi.org/10.1016/j.jsb.2006.05.009" }
+                ]
+            },
+            {
+                year: "2005–2012",
+                title: "Direct Electron Detectors (CMOS) Become Available",
+                desc: "Radiation-hardened CMOS monolithic active pixel sensors (MAPS) enabled direct detection and counting of primary electrons with vastly superior detective quantum efficiency (DQE) and high frame rates—the hardware pillar of the Resolution Revolution.",
+                visibility: "all",
+                type: "resolution",
+                refs: [
+                    { label: "PMID: 15890445", url: "https://pubmed.ncbi.nlm.nih.gov/15890445/" },
+                    { label: "DOI: 10.1016/j.nima.2005.03.023", url: "https://doi.org/10.1016/j.nima.2005.03.023" },
+                    { label: "PMID: 19647366", url: "https://pubmed.ncbi.nlm.nih.gov/19647366/" },
+                    { label: "PMCID: PMC2868354", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC2868354/" },
+                    { label: "PMID: 27572721", url: "https://pubmed.ncbi.nlm.nih.gov/27572721/" }
+                ]
+            },
+            {
+                year: "2012",
+                title: "Scheres: RELION is Released",
+                desc: "Sjors Scheres released RELION (REgularised LIkelihood OptimisatioN), applying an empirical Bayesian framework that automated noise-model estimation, prevented overfitting, and resolved conformational heterogeneity—the statistical pillar of the Resolution Revolution.",
+                visibility: "all",
+                type: "resolution",
+                refs: [
+                    { label: "PMID: 23000701", url: "https://pubmed.ncbi.nlm.nih.gov/23000701/" },
+                    { label: "PMCID: PMC3690530", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC3690530/" },
+                    { label: "DOI: 10.1016/j.jsb.2012.09.006", url: "https://doi.org/10.1016/j.jsb.2012.09.006" }
+                ]
+            },
+            {
+                year: "2012–2013",
+                title: "Agard, Grigorieff & Cheng: First Motion Correction Released",
+                desc: "Axel Brilot, Melody Campbell, and Nikolaus Grigorieff (2012) characterized beam-induced particle motion and showed movie-frame alignment restored high-resolution signal, while Xueming Li, David Agard, and Yifan Cheng (2013) combined electron counting with motion correction—completing the Resolution Revolution convergence.",
+                visibility: "all",
+                type: "resolution",
+                refs: [
+                    { label: "PMID: 22366277", url: "https://pubmed.ncbi.nlm.nih.gov/22366277/" },
+                    { label: "PMCID: PMC3322646", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC3322646/" },
+                    { label: "PMID: 23022349", url: "https://pubmed.ncbi.nlm.nih.gov/23022349/" },
+                    { label: "PMCID: PMC3510009", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC3510009/" },
+                    { label: "PMID: 23644547", url: "https://pubmed.ncbi.nlm.nih.gov/23644547/" },
+                    { label: "PMCID: PMC3684049", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC3684049/" }
+                ]
+            },
+            {
+                year: "2013",
+                title: "Elmlund: Initial Model Generation (PRIME)",
+                desc: "Hans Elmlund, Dominika Elmlund, and Samy Bengio developed PRIME, a probabilistic algorithm capable of computing unbiased ab initio 3D starting models directly from noisy 2D images without prior structural templates.",
+                visibility: "detail",
+                type: "software",
+                refs: [
+                    { label: "PMID: 23931142", url: "https://pubmed.ncbi.nlm.nih.gov/23931142/" },
+                    { label: "DOI: 10.1016/j.str.2013.07.002", url: "https://doi.org/10.1016/j.str.2013.07.002" }
+                ]
+            },
+            {
+                year: "2013",
+                title: "MicroED: 3D Electron Crystallography of Nanocrystals",
+                desc: "Dan Shi, Brent Nannenga, Michael Iadanza, and Tamir Gonen established MicroED (Micro-electron diffraction), demonstrating that 3D electron diffraction from vanishingly small protein nanocrystals embedded in vitreous ice could rapidly determine atomic structures.",
+                visibility: "detail",
+                type: "standard",
+                refs: [
+                    { label: "PMID: 24252878", url: "https://pubmed.ncbi.nlm.nih.gov/24252878/" },
+                    { label: "PMCID: PMC3831942", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC3831942/" }
+                ]
+            },
+            {
+                year: "2013",
+                title: "Cheng & Julius: TRPV1 Ion Channel Structure",
+                desc: "Maofu Liao, Erhu Cao, David Julius, and Yifan Cheng determined the 3.4 Å structure of the mammalian TRPV1 ion channel without crystallization, demonstrating that single-particle cryo-EM could solve de novo atomic structures of dynamic integral membrane proteins.",
+                visibility: "detail",
+                type: "standard",
+                refs: [
+                    { label: "PMID: 24305160", url: "https://pubmed.ncbi.nlm.nih.gov/24305160/" },
+                    { label: "PMCID: PMC4078027", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC4078027/" },
+                    { label: "DOI: 10.1038/nature12822", url: "https://doi.org/10.1038/nature12822" }
+                ]
+            },
+            {
+                year: "2014",
+                title: "Danev & Baumeister: Volta Phase Plate",
+                desc: "Radostin Danev and Wolfgang Baumeister developed the Volta potential phase plate, using a beam-induced electrostatic potential on a heated thin carbon film to achieve in-focus phase contrast and dramatically boost visibility of small macromolecules.",
+                visibility: "detail",
+                type: "standard",
+                refs: [
+                    { label: "PMID: 25331897", url: "https://pubmed.ncbi.nlm.nih.gov/25331897/" },
+                    { label: "PMCID: PMC4226124", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC4226124/" },
+                    { label: "DOI: 10.1073/pnas.1418377111", url: "https://doi.org/10.1073/pnas.1418377111" }
+                ]
+            },
+            {
+                year: "2014–2015",
+                title: "Cryo-EM: Method of the Year & The Resolution Revolution",
+                desc: "Following Werner Kühlbrandt's 2014 Science commentary coining 'The Resolution Revolution', Nature Methods named single-particle cryo-EM its 2015 Method of the Year in recognition of its transformative impact across structural biology.",
+                visibility: "all",
+                type: "highlight",
+                refs: [
+                    { label: "PMID: 27110631", url: "https://pubmed.ncbi.nlm.nih.gov/27110631/" },
+                    { label: "DOI: 10.1038/nmeth.3700", url: "https://doi.org/10.1038/nmeth.3700" },
+                    { label: "PMID: 24675944", url: "https://pubmed.ncbi.nlm.nih.gov/24675944/" },
+                    { label: "PMID: 26354465", url: "https://pubmed.ncbi.nlm.nih.gov/26354465/" }
+                ]
+            },
+            {
+                year: "2016",
+                title: "Jiang: Algorithmic Aberration Correction",
+                desc: "Wen Jiang and colleagues developed computational algorithms to estimate and correct optical distortions—such as anisotropic magnification distortion—directly from single-particle cryo-EM images without prior microscope calibration.",
+                visibility: "detail",
+                type: "software",
+                refs: [
+                    { label: "PMID: 27270241", url: "https://pubmed.ncbi.nlm.nih.gov/27270241/" },
+                    { label: "PMCID: PMC4935934", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC4935934/" },
+                    { label: "DOI: 10.1016/j.jsb.2016.06.003", url: "https://doi.org/10.1016/j.jsb.2016.06.003" }
+                ]
+            },
+            {
+                year: "2016",
+                title: "GPU Computation & RELION-2",
+                desc: "Dari Kimanius, Björn Forsberg, Sjors Scheres, and Erik Lindahl introduced GPU parallelization in RELION-2, accelerating computationally demanding Bayesian 3D classification and refinement from weeks on CPU clusters to days on a single workstation.",
+                visibility: "detail",
+                type: "software",
+                refs: [
+                    { label: "PMID: 27845625", url: "https://pubmed.ncbi.nlm.nih.gov/27845625/" },
+                    { label: "PMCID: PMC5310839", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC5310839/" },
+                    { label: "DOI: 10.7554/eLife.18722", url: "https://doi.org/10.7554/eLife.18722" }
+                ]
+            },
+            {
+                year: "2017",
+                title: "Frank, Henderson & Dubochet: Nobel Prize in Chemistry",
+                desc: "The Nobel Prize in Chemistry was jointly awarded to Jacques Dubochet, Joachim Frank, and Richard Henderson for developing cryo-electron microscopy for the high-resolution structure determination of biomolecules in solution.",
+                visibility: "all",
+                type: "highlight",
+                refs: [
+                    { label: "PMID: 29423601", url: "https://pubmed.ncbi.nlm.nih.gov/29423601/" },
+                    { label: "DOI: 10.1007/s00216-018-0899-8", url: "https://doi.org/10.1007/s00216-018-0899-8" }
+                ]
+            },
+            {
+                year: "2019–2026",
+                title: "Müller: Laser Phase Plate",
+                desc: "Distinct from material electrostatic phase plates like the Volta, Holger Müller and colleagues developed a continuous-wave optical cavity laser phase plate that shifts the phase of the unscattered electron beam using light alone, avoiding film degradation and charging.",
+                visibility: "detail",
+                type: "standard",
+                refs: [
+                    { label: "PMID: 42275466", url: "https://pubmed.ncbi.nlm.nih.gov/42275466/" },
+                    { label: "DOI: 10.1126/science.aeh0665", url: "https://doi.org/10.1126/science.aeh0665" },
+                    { label: "PMID: 31562475", url: "https://pubmed.ncbi.nlm.nih.gov/31562475/" },
+                    { label: "PMCID: PMC6768090", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC6768090/" }
+                ]
+            },
+            {
+                year: "2026",
+                title: "Fossum: CMOS 'Camera-on-Chip' Sensor Draper Prize",
+                desc: "Eric R. Fossum received the 2026 NAE Charles Stark Draper Prize for Engineering for inventing the CMOS active pixel image sensor, the foundational semiconductor architecture underlying modern direct electron detectors.",
+                visibility: "all",
+                type: "highlight",
+                refs: [
+                    { label: "2026 NAE Draper Prize", url: "https://www.nae.edu/343291/Eric-R-Fossum-Named-Recipient-of-2026-NAE-Charles-Stark-Draper-Prize-for-Engineering-" }
+                ]
+            }
+        ];
+
+        let currentMode = 'detail';
+
+        const externalIcon = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>`;
+
+        function buildReferenceBadges(refs, isLeft) {
+            const alignClass = isLeft ? 'justify-end-md' : '';
+            const badges = refs.map(r =>
+                `<a href="${r.url}" target="_blank" rel="noopener noreferrer" class="ref-badge">${r.label}${externalIcon}</a>`
+            ).join('');
+            return `<div class="ref-container ${alignClass}">${badges}</div>`;
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            const btnSimple = document.getElementById('btn-simple');
+            const btnDetail = document.getElementById('btn-detail');
+
+            if (mode === 'simple') {
+                btnSimple.className = "px-6 py-2 rounded-full text-sm font-semibold bg-indigo-600 text-white transition-colors duration-300 shadow-md";
+                btnDetail.className = "px-6 py-2 rounded-full text-sm font-semibold text-slate-600 hover:text-indigo-600 transition-colors duration-300";
+            } else {
+                btnDetail.className = "px-6 py-2 rounded-full text-sm font-semibold bg-indigo-600 text-white transition-colors duration-300 shadow-md";
+                btnSimple.className = "px-6 py-2 rounded-full text-sm font-semibold text-slate-600 hover:text-indigo-600 transition-colors duration-300";
+            }
+            renderTimeline();
+        }
+
+        function renderTimeline() {
+            const container = document.getElementById('timeline-container');
+            const items = eventsData.filter(e => currentMode === 'detail' || e.visibility === 'all');
+
+            let html = '';
+            items.forEach((item, index) => {
+                const isLeft = index % 2 === 0;
+                let dotClass = 'timeline-dot';
+                let cardClasses = "glass-card p-6 md:p-8 rounded-2xl shadow-md hover:-translate-y-1 hover:shadow-lg transition-all duration-300 relative z-10";
+                let textYear = "text-sm md:text-base font-black tracking-widest uppercase ";
+                let pillarBadge = "";
+
+                if (item.type === 'highlight') {
+                    dotClass += ' highlight';
+                    cardClasses += " border-amber-300 bg-amber-50/90";
+                    textYear += "text-amber-600";
+                } else if (item.type === 'stain') {
+                    dotClass += ' stain';
+                    cardClasses += " border-violet-300 bg-violet-50/80";
+                    textYear += "text-violet-600";
+                } else if (item.type === 'software') {
+                    dotClass += ' software';
+                    cardClasses += " border-teal-300 bg-teal-50/80";
+                    textYear += "text-teal-700";
+                } else if (item.type === 'resolution') {
+                    dotClass += ' resolution';
+                    cardClasses += " border-2 border-sky-400 bg-sky-50/90 shadow-sky-100";
+                    textYear += "text-sky-700";
+                    pillarBadge = `<span class="pillar-tag">Resolution Revolution Pillar</span>`;
+                } else {
+                    textYear += "text-indigo-600";
+                }
+
+                const refBadgesDesktop = buildReferenceBadges(item.refs, isLeft);
+                const refBadgesMobile = buildReferenceBadges(item.refs, false);
+
+                const cardDesktop = `
+                    <div class="${cardClasses}">
+                        <div><span class="${textYear}">${item.year}</span>${pillarBadge}</div>
+                        <h3 class="text-xl md:text-2xl font-bold mt-2 mb-3 text-slate-800 leading-tight">${item.title}</h3>
+                        <p class="text-sm md:text-base text-slate-600 leading-relaxed">${item.desc}</p>
+                        ${refBadgesDesktop}
+                    </div>
+                `;
+
+                const cardMobile = `
+                    <div class="${cardClasses}">
+                        <div><span class="${textYear}">${item.year}</span>${pillarBadge}</div>
+                        <h3 class="text-xl font-bold mt-2 mb-3 text-slate-800 leading-tight">${item.title}</h3>
+                        <p class="text-sm text-slate-600 leading-relaxed">${item.desc}</p>
+                        ${refBadgesMobile}
+                    </div>
+                `;
+
+                if (isLeft) {
+                    html += `
+                    <div class="relative flex flex-col md:flex-row justify-between items-center w-full reveal mb-10">
+                        <div class="hidden md:block w-5/12 text-right pr-10">${cardDesktop}</div>
+                        <div class="${dotClass}"></div>
+                        <div class="block md:hidden w-full pl-16">${cardMobile}</div>
+                        <div class="hidden md:block w-5/12"></div>
+                    </div>`;
+                } else {
+                    html += `
+                    <div class="relative flex flex-col md:flex-row justify-between items-center w-full reveal mb-10">
+                        <div class="hidden md:block w-5/12"></div>
+                        <div class="${dotClass}"></div>
+                        <div class="w-full md:w-5/12 pl-16 md:pl-10 text-left">${cardDesktop}</div>
+                    </div>`;
+                }
+            });
+
+            container.innerHTML = html;
+            setTimeout(reveal, 50);
+        }
+
+        function reveal() {
+            const reveals = document.querySelectorAll(".reveal");
+            for (let i = 0; i < reveals.length; i++) {
+                if (reveals[i].getBoundingClientRect().top < window.innerHeight - 80) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+
+        window.addEventListener("scroll", reveal);
+        setMode('detail');
+    </script>
+</body>
+</html>
