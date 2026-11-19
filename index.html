@@ -326,6 +326,71 @@
         .cat-pill.active-ring {
             box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #334155;
         }
+
+        /* List (Master-Detail) View Styles */
+        .list-scroll-pane {
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 transparent;
+        }
+        .list-scroll-pane::-webkit-scrollbar {
+            width: 6px;
+        }
+        .list-scroll-pane::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .list-scroll-pane::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 9999px;
+        }
+        .list-scroll-pane::-webkit-scrollbar-thumb:hover {
+            background-color: #94a3b8;
+        }
+        .list-row {
+            transition: all 0.16s ease;
+            border-left: 4px solid transparent;
+        }
+        .list-row:hover {
+            background-color: #f8fafc;
+        }
+        .list-row.selected-standard {
+            background-color: #eef2ff;
+            border-left-color: #4f46e5;
+        }
+        .list-row.selected-stain {
+            background-color: #f5f3ff;
+            border-left-color: #7c3aed;
+        }
+        .list-row.selected-software {
+            background-color: #f0fdfa;
+            border-left-color: #0d9488;
+        }
+        .list-row.selected-resolution {
+            background-color: #f0f9ff;
+            border-left-color: #0284c7;
+        }
+        .list-row.selected-highlight {
+            background-color: #fffbeb;
+            border-left-color: #f59e0b;
+        }
+        .list-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 9999px;
+            flex-shrink: 0;
+        }
+        .list-dot.standard { background-color: #4f46e5; }
+        .list-dot.stain { background-color: #7c3aed; }
+        .list-dot.software { background-color: #0d9488; }
+        .list-dot.resolution { background-color: #0284c7; }
+        .list-dot.highlight { background-color: #f59e0b; }
+
+        .detail-fade {
+            animation: detailFadeIn 0.2s ease-out;
+        }
+        @keyframes detailFadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen">
@@ -369,37 +434,40 @@
     </header>
 
     <!-- Sticky Colored Category Labels Bar -->
-    <div id="sticky-labels-bar" class="sticky top-0 z-40 bg-slate-50/95 backdrop-blur-md border-y border-slate-200/90 shadow-sm py-2.5 md:py-3 px-3 md:px-4">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2.5 md:gap-3">
-            <!-- Horizontally scrollable pill strip on mobile, wrapped on desktop -->
-            <div class="w-full md:w-auto flex flex-nowrap md:flex-wrap items-center justify-start md:justify-center gap-2 overflow-x-auto no-scrollbar py-1 px-1 text-xs font-semibold">
-                <button data-cat="all" onclick="setCategory('all')" class="cat-pill px-3.5 py-1.5 rounded-full bg-slate-800 text-white active-ring shrink-0">
+    <div id="sticky-labels-bar" class="sticky top-0 z-40 bg-slate-50/95 backdrop-blur-md border-y border-slate-200/90 shadow-sm py-2.5 px-3 md:px-5">
+        <div class="max-w-[1440px] mx-auto flex flex-col lg:flex-row items-center justify-between gap-2.5 lg:gap-4">
+            <!-- Single-row scrollable pill strip (never orphans a pill onto a 2nd line) -->
+            <div class="w-full lg:w-auto flex flex-nowrap items-center justify-start lg:justify-start gap-1.5 xl:gap-2 overflow-x-auto no-scrollbar py-1 px-1 text-[11px] xl:text-xs font-semibold">
+                <button data-cat="all" onclick="setCategory('all')" class="cat-pill px-3 py-1.5 rounded-full bg-slate-800 text-white active-ring shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
                     All Milestones
                 </button>
-                <button data-cat="standard" onclick="setCategory('standard')" class="cat-pill px-3.5 py-1.5 rounded-full bg-indigo-600 text-white shrink-0">
+                <button data-cat="standard" onclick="setCategory('standard')" class="cat-pill px-3 py-1.5 rounded-full bg-indigo-600 text-white shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
                     Foundational &amp; Hardware
                 </button>
-                <button data-cat="stain" onclick="setCategory('stain')" class="cat-pill px-3.5 py-1.5 rounded-full bg-violet-600 text-white shrink-0">
+                <button data-cat="stain" onclick="setCategory('stain')" class="cat-pill px-3 py-1.5 rounded-full bg-violet-600 text-white shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400">
                     Negative Staining
                 </button>
-                <button data-cat="software" onclick="setCategory('software')" class="cat-pill px-3.5 py-1.5 rounded-full bg-teal-600 text-white shrink-0">
+                <button data-cat="software" onclick="setCategory('software')" class="cat-pill px-3 py-1.5 rounded-full bg-teal-600 text-white shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400">
                     Software &amp; Algorithms
                 </button>
-                <button data-cat="resolution" onclick="setCategory('resolution')" class="cat-pill px-3.5 py-1.5 rounded-full bg-sky-600 text-white shrink-0">
-                    Resolution Revolution Convergence
+                <button data-cat="resolution" onclick="setCategory('resolution')" class="cat-pill px-3 py-1.5 rounded-full bg-sky-600 text-white shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400">
+                    Resolution Revolution
                 </button>
-                <button data-cat="highlight" onclick="setCategory('highlight')" class="cat-pill px-3.5 py-1.5 rounded-full bg-amber-500 text-white shrink-0">
-                    Nobel Prizes &amp; Major Honors
+                <button data-cat="highlight" onclick="setCategory('highlight')" class="cat-pill px-3 py-1.5 rounded-full bg-amber-500 text-white shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400">
+                    Nobel Prizes &amp; Honors
                 </button>
             </div>
 
-            <!-- Layout Orientation Toggle: Vertical / Horizontal -->
+            <!-- Layout Orientation Toggle: Vertical / Horizontal / List -->
             <div class="bg-white rounded-full p-1 shadow-sm border border-slate-200 inline-flex shrink-0">
-                <button id="btn-vertical" class="px-4 py-1.5 rounded-full text-xs font-semibold transition-colors duration-200" onclick="setOrientation('vertical')">
+                <button id="btn-vertical" class="px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400" onclick="setOrientation('vertical')">
                     Vertical
                 </button>
-                <button id="btn-horizontal" class="px-4 py-1.5 rounded-full text-xs font-semibold transition-colors duration-200" onclick="setOrientation('horizontal')">
+                <button id="btn-horizontal" class="px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400" onclick="setOrientation('horizontal')">
                     Horizontal
+                </button>
+                <button id="btn-list" class="px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400" onclick="setOrientation('list')">
+                    List
                 </button>
             </div>
         </div>
@@ -437,6 +505,44 @@
             </div>
         </div>
 
+        <!-- List (Master-Detail) Container -->
+        <div id="list-wrapper" class="hidden max-w-7xl mx-auto px-3 md:px-6">
+            <div class="flex items-center justify-between mb-3 px-1">
+                <span class="text-xs font-medium text-slate-500">
+                    <span class="hidden md:inline">Click any milestone on the left or use &uarr; / &darr; arrow keys to inspect details on the right.</span>
+                    <span class="md:hidden">Tap any milestone to view full details and references.</span>
+                </span>
+                <span id="list-position-indicator" class="text-xs font-semibold text-slate-500"></span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
+                <!-- Left Pane: Compact Scrollable Title List -->
+                <div class="md:col-span-5 lg:col-span-5 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div id="timeline-list-container" class="list-scroll-pane divide-y divide-slate-100 md:max-h-[calc(100vh-230px)] md:overflow-y-auto" role="listbox" aria-label="Milestones list"></div>
+                </div>
+
+                <!-- Right Pane (Desktop): Sticky Detail Box -->
+                <div class="hidden md:block md:col-span-7 lg:col-span-7 sticky top-24">
+                    <div id="list-detail-desktop"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Detail Drawer / Modal for List View -->
+        <div id="mobile-detail-modal" class="hidden fixed inset-0 z-50 md:hidden flex items-end sm:items-center justify-center bg-slate-900/50 backdrop-blur-xs p-0 sm:p-4" onclick="closeMobileDetail(event)">
+            <div class="bg-white w-full sm:max-w-lg max-h-[86vh] overflow-y-auto rounded-t-3xl sm:rounded-2xl shadow-2xl border border-slate-200 p-5 sm:p-6" onclick="event.stopPropagation()">
+                <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+                    <span id="mobile-detail-counter" class="text-xs font-semibold text-slate-400 uppercase tracking-wider"></span>
+                    <button onclick="closeMobileDetail()" class="p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition" aria-label="Close details">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div id="list-detail-mobile"></div>
+            </div>
+        </div>
+
         <!-- Empty State -->
         <div id="empty-state" class="hidden max-w-xl mx-auto text-center py-20 px-4">
             <p class="text-lg font-bold text-slate-700">No matching milestones found</p>
@@ -450,7 +556,7 @@
     <!-- Footer -->
     <footer class="max-w-6xl mx-auto px-4 pb-12 pt-6 border-t border-slate-200/80 text-center text-xs md:text-sm text-slate-400 leading-relaxed">
         <p>
-            Version 1.11. Armache Lab, Pennsylvania State University, Department of Biochemistry and Molecular Biology.
+            Version 1.14. Armache Lab, Pennsylvania State University, Department of Biochemistry and Molecular Biology.
             <a href="https://www.armachelab.psu.edu" target="_blank" rel="noopener noreferrer" class="underline hover:text-slate-600 transition-colors">https://www.armachelab.psu.edu</a>.
         </p>
         <p class="mt-1">
@@ -467,6 +573,16 @@
                 type: "standard",
                 refs: [
                     { label: "DOI: 10.1515/zpch-1898-2526", url: "https://doi.org/10.1515/zpch-1898-2526" }
+                ]
+            },
+            {
+                year: "1926–1927",
+                title: "Hans Busch: Magnetic Electron Lens Principle",
+                desc: "Hans Busch proved mathematically (1926) and demonstrated for the short concentrating coil of a Braun cathode ray tube (1927) that an axially symmetric magnetic field focuses charged electron beams in the same way a convex glass lens focuses light, founding the field of electron optics.",
+                type: "standard",
+                refs: [
+                    { label: "DOI: 10.1002/andp.19263862507", url: "https://doi.org/10.1002/andp.19263862507" },
+                    { label: "DOI: 10.1007/BF01656203", url: "https://doi.org/10.1007/BF01656203" }
                 ]
             },
             {
@@ -790,6 +906,16 @@
                 ]
             },
             {
+                year: "2003",
+                title: "Rosenthal & Henderson: Fourier Shell Correlation (FSC = 0.143)",
+                desc: "Peter B. Rosenthal and Richard Henderson introduced the FSC = 0.143 resolution criterion (alongside B-factor sharpening and optimal orientation/hand determination) to quantitatively relate half-map correlation to the true signal-to-noise ratio of a single-particle cryo-EM reconstruction, establishing the field's standard resolution metric.",
+                type: "standard",
+                refs: [
+                    { label: "PMID: 14568533", url: "https://pubmed.ncbi.nlm.nih.gov/14568533/" },
+                    { label: "DOI: 10.1016/j.jmb.2003.07.013", url: "https://doi.org/10.1016/j.jmb.2003.07.013" }
+                ]
+            },
+            {
                 year: "2005",
                 title: "Leginon, Automated Data Collection Becomes Available",
                 desc: "Christian Suloway, Clinton Potter, Bridget Carragher, and colleagues introduced the Leginon system for automated, multi-scale target selection and high-throughput acquisition of single-particle micrographs.",
@@ -1080,6 +1206,8 @@
         let currentOrientation = 'horizontal';
         let currentCategory = 'all';
         let currentSearch = '';
+        let selectedListIndex = 0;
+        let lastFilteredItems = [];
 
         const externalIcon = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>`;
 
@@ -1128,16 +1256,14 @@
 
         function setOrientation(mode) {
             currentOrientation = mode;
-            const btnV = document.getElementById('btn-vertical');
-            const btnH = document.getElementById('btn-horizontal');
+            const activeCls = "px-3.5 py-1.5 rounded-full text-xs font-semibold bg-indigo-600 text-white shadow-sm transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400";
+            const inactiveCls = "px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-600 hover:text-indigo-600 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400";
 
-            if (mode === 'vertical') {
-                btnV.className = "px-4 py-1.5 rounded-full text-xs font-semibold bg-indigo-600 text-white shadow-sm transition-colors duration-200";
-                btnH.className = "px-4 py-1.5 rounded-full text-xs font-semibold text-slate-600 hover:text-indigo-600 transition-colors duration-200";
-            } else {
-                btnH.className = "px-4 py-1.5 rounded-full text-xs font-semibold bg-indigo-600 text-white shadow-sm transition-colors duration-200";
-                btnV.className = "px-4 py-1.5 rounded-full text-xs font-semibold text-slate-600 hover:text-indigo-600 transition-colors duration-200";
-            }
+            document.getElementById('btn-vertical').className = (mode === 'vertical') ? activeCls : inactiveCls;
+            document.getElementById('btn-horizontal').className = (mode === 'horizontal') ? activeCls : inactiveCls;
+            document.getElementById('btn-list').className = (mode === 'list') ? activeCls : inactiveCls;
+
+            closeMobileDetail();
             render();
         }
 
@@ -1195,8 +1321,10 @@
 
         function render() {
             const items = getFilteredItems();
+            lastFilteredItems = items;
             const vWrapper = document.getElementById('vertical-wrapper');
             const hWrapper = document.getElementById('horizontal-wrapper');
+            const lWrapper = document.getElementById('list-wrapper');
             const emptyState = document.getElementById('empty-state');
             const counter = document.getElementById('results-counter');
 
@@ -1205,19 +1333,32 @@
             if (items.length === 0) {
                 vWrapper.classList.add('hidden');
                 hWrapper.classList.add('hidden');
+                lWrapper.classList.add('hidden');
                 emptyState.classList.remove('hidden');
+                closeMobileDetail();
                 return;
             }
             emptyState.classList.add('hidden');
 
+            if (selectedListIndex >= items.length) {
+                selectedListIndex = 0;
+            }
+
             if (currentOrientation === 'vertical') {
                 vWrapper.classList.remove('hidden');
                 hWrapper.classList.add('hidden');
+                lWrapper.classList.add('hidden');
                 renderVertical(items);
-            } else {
+            } else if (currentOrientation === 'horizontal') {
                 vWrapper.classList.add('hidden');
                 hWrapper.classList.remove('hidden');
+                lWrapper.classList.add('hidden');
                 renderHorizontal(items);
+            } else {
+                vWrapper.classList.add('hidden');
+                hWrapper.classList.add('hidden');
+                lWrapper.classList.remove('hidden');
+                renderList(items);
             }
         }
 
@@ -1303,6 +1444,182 @@
 
             container.innerHTML = html;
         }
+
+
+        function getCategoryMeta(type) {
+            const map = {
+                standard: { label: "Foundational & Hardware", badgeCls: "bg-indigo-100 text-indigo-700 border-indigo-200" },
+                stain: { label: "Negative Staining", badgeCls: "bg-violet-100 text-violet-700 border-violet-200" },
+                software: { label: "Software & Algorithms", badgeCls: "bg-teal-100 text-teal-700 border-teal-200" },
+                resolution: { label: "Resolution Revolution", badgeCls: "bg-sky-100 text-sky-700 border-sky-200" },
+                highlight: { label: "Nobel Prize / Major Honor", badgeCls: "bg-amber-100 text-amber-800 border-amber-200" }
+            };
+            return map[type] || map.standard;
+        }
+
+        function renderList(items) {
+            const listContainer = document.getElementById('timeline-list-container');
+            let html = '';
+
+            items.forEach((item, index) => {
+                const isSelected = index === selectedListIndex;
+                const selectedClass = isSelected ? `selected-${item.type}` : '';
+                const titleCls = isSelected ? 'text-slate-900 font-bold' : 'text-slate-700 font-medium';
+
+                html += `
+                <button
+                    type="button"
+                    id="list-row-${index}"
+                    role="option"
+                    aria-selected="${isSelected}"
+                    onclick="selectListItem(${index}, true)"
+                    class="list-row ${selectedClass} w-full text-left px-4 py-3 flex items-center gap-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-500"
+                >
+                    <span class="list-dot ${item.type}"></span>
+                    <span class="text-xs font-mono font-bold text-slate-500 w-20 shrink-0">${item.year}</span>
+                    <span class="text-sm ${titleCls} leading-snug flex-1">${item.title}</span>
+                    <svg class="w-4 h-4 ${isSelected ? 'text-slate-700' : 'text-slate-300'} shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>`;
+            });
+
+            listContainer.innerHTML = html;
+            renderListDetail(items, selectedListIndex, false);
+        }
+
+        function buildDetailCardHtml(item, index, total, isMobile) {
+            const { cardAccent, textYear, pillarBadge } = getCardStyle(item);
+            const catMeta = getCategoryMeta(item.type);
+            const refBadges = buildReferenceBadges(item.refs, false);
+            const prevDisabled = index <= 0 ? 'opacity-40 pointer-events-none' : 'hover:bg-slate-100';
+            const nextDisabled = index >= total - 1 ? 'opacity-40 pointer-events-none' : 'hover:bg-slate-100';
+
+            const wrapperCls = isMobile
+                ? 'detail-fade'
+                : `glass-card detail-fade p-7 lg:p-8 rounded-2xl shadow-md ${cardAccent}`;
+
+            return `
+                <div class="${wrapperCls}">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="${textYear}">${item.year}</span>
+                            ${pillarBadge}
+                        </div>
+                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${catMeta.badgeCls}">
+                            ${catMeta.label}
+                        </span>
+                    </div>
+
+                    <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-900 leading-tight mb-4">${item.title}</h2>
+                    <p class="text-sm md:text-base text-slate-600 leading-relaxed">${item.desc}</p>
+
+                    <div class="mt-5 pt-4 border-t border-slate-200/80">
+                        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">References &amp; Sources</div>
+                        ${refBadges}
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-slate-200/80 flex items-center justify-between gap-3">
+                        <button
+                            type="button"
+                            onclick="stepListItem(-1)"
+                            class="px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 text-xs font-bold shadow-xs transition ${prevDisabled}"
+                        >
+                            &larr; Previous
+                        </button>
+                        <span class="text-xs font-medium text-slate-400">${index + 1} / ${total}</span>
+                        <button
+                            type="button"
+                            onclick="stepListItem(1)"
+                            class="px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 text-xs font-bold shadow-xs transition ${nextDisabled}"
+                        >
+                            Next &rarr;
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderListDetail(items, index, openMobileDrawer) {
+            const item = items[index];
+            if (!item) return;
+
+            const posIndicator = document.getElementById('list-position-indicator');
+            posIndicator.textContent = `${index + 1} of ${items.length}`;
+
+            const desktopPane = document.getElementById('list-detail-desktop');
+            desktopPane.innerHTML = buildDetailCardHtml(item, index, items.length, false);
+
+            const mobilePane = document.getElementById('list-detail-mobile');
+            mobilePane.innerHTML = buildDetailCardHtml(item, index, items.length, true);
+            document.getElementById('mobile-detail-counter').textContent = `Milestone ${index + 1} of ${items.length}`;
+
+            if (openMobileDrawer && window.innerWidth < 768) {
+                document.getElementById('mobile-detail-modal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function selectListItem(index, userTriggered) {
+            if (index < 0 || index >= lastFilteredItems.length) return;
+            selectedListIndex = index;
+
+            // Update row highlight classes without rebuilding the entire list DOM
+            lastFilteredItems.forEach((item, i) => {
+                const row = document.getElementById(`list-row-${i}`);
+                if (!row) return;
+                row.classList.remove('selected-standard', 'selected-stain', 'selected-software', 'selected-resolution', 'selected-highlight');
+                const titleSpan = row.querySelectorAll('span')[2];
+                const chev = row.querySelector('svg');
+                if (i === index) {
+                    row.classList.add(`selected-${item.type}`);
+                    row.setAttribute('aria-selected', 'true');
+                    if (titleSpan) { titleSpan.classList.remove('text-slate-700', 'font-medium'); titleSpan.classList.add('text-slate-900', 'font-bold'); }
+                    if (chev) { chev.classList.remove('text-slate-300'); chev.classList.add('text-slate-700'); }
+                } else {
+                    row.setAttribute('aria-selected', 'false');
+                    if (titleSpan) { titleSpan.classList.remove('text-slate-900', 'font-bold'); titleSpan.classList.add('text-slate-700', 'font-medium'); }
+                    if (chev) { chev.classList.remove('text-slate-700'); chev.classList.add('text-slate-300'); }
+                }
+            });
+
+            renderListDetail(lastFilteredItems, index, userTriggered);
+        }
+
+        function stepListItem(delta) {
+            const nextIdx = selectedListIndex + delta;
+            if (nextIdx < 0 || nextIdx >= lastFilteredItems.length) return;
+            const modalOpen = !document.getElementById('mobile-detail-modal').classList.contains('hidden');
+            selectListItem(nextIdx, modalOpen);
+            const row = document.getElementById(`list-row-${nextIdx}`);
+            if (row) {
+                row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+            }
+        }
+
+        function closeMobileDetail(e) {
+            if (e && e.target && e.target.id !== 'mobile-detail-modal') return;
+            const modal = document.getElementById('mobile-detail-modal');
+            if (modal) modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        // Keyboard navigation (ArrowUp / ArrowDown / Escape) in List view
+        document.addEventListener('keydown', (e) => {
+            if (currentOrientation !== 'list') return;
+            const activeTag = document.activeElement ? document.activeElement.tagName : '';
+            if (activeTag === 'INPUT' || activeTag === 'TEXTAREA') return;
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                stepListItem(1);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                stepListItem(-1);
+            } else if (e.key === 'Escape') {
+                closeMobileDetail();
+            }
+        });
 
         function reveal() {
             const reveals = document.querySelectorAll(".reveal");
