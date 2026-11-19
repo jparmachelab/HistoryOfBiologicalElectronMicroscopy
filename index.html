@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Timeline of Cryo-Electron Microscopy (v1.04)</title>
+    <title>Timeline of Biological Electron Microscopy (v1.06)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .glass-card {
@@ -334,10 +334,10 @@
     <header class="max-w-6xl mx-auto px-4 pt-12 pb-6">
         <div class="text-center">
             <span class="inline-block px-3 py-1 mb-3 text-xs font-bold tracking-wider uppercase text-sky-700 bg-sky-100 rounded-full border border-sky-200">
-                Version 1.04
+                Version 1.06
             </span>
             <h1 class="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-sky-600 to-amber-500 mb-4 pb-2">
-                The History of Cryo-EM
+                Timeline of Biological Electron Microscopy
             </h1>
             <p class="text-base md:text-xl text-slate-500 max-w-3xl mx-auto leading-relaxed">
                 Tracing foundational discoveries, negative staining, pioneering software suites, phase plates, and the 2012–2013 Resolution Revolution.
@@ -880,6 +880,15 @@
                 ]
             },
             {
+                year: "2015",
+                title: "Grant & Grigorieff: Dose-Weighting (Exposure Filtering)",
+                desc: "Timothy Grant and Nikolaus Grigorieff quantified radiation damage as a function of spatial frequency and introduced dose-weighting (exposure filtering), weighting movie frames by their optimal electron exposure to preserve high-resolution signal from early frames while retaining low-resolution contrast from later frames.",
+                type: "software",
+                refs: [
+                    { label: "DOI: 10.7554/eLife.06980", url: "https://doi.org/10.7554/eLife.06980" }
+                ]
+            },
+            {
                 year: "2016",
                 title: "Jiang: Algorithmic Aberration Correction",
                 desc: "Wen Jiang and colleagues developed computational algorithms to estimate and correct optical distortions—such as anisotropic magnification distortion—directly from single-particle cryo-EM images without prior microscope calibration.",
@@ -909,6 +918,15 @@
                 refs: [
                     { label: "PMID: 28165473", url: "https://pubmed.ncbi.nlm.nih.gov/28165473/" },
                     { label: "DOI: 10.1038/nmeth.4169", url: "https://doi.org/10.1038/nmeth.4169" }
+                ]
+            },
+            {
+                year: "2017",
+                title: "Zheng, Cheng & Agard et al.: MotionCor2 (Patched Motion Correction)",
+                desc: "Shawn Q. Zheng, Eugene Palovcak, Jean-Paul Armache, Kliment A. Verba, Yifan Cheng, and David A. Agard developed MotionCor2, introducing GPU-accelerated anisotropic (patched) local motion correction combined with dose-weighting to correct non-uniform beam-induced specimen deformation across cryo-EM movie frames.",
+                type: "software",
+                refs: [
+                    { label: "DOI: 10.1038/nmeth.4193", url: "https://doi.org/10.1038/nmeth.4193" }
                 ]
             },
             {
