@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Timeline of Biological Electron Microscopy</title>
+    <title>Interactive Timeline of Cryo-Electron Microscopy (v1.04)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .glass-card {
@@ -334,10 +334,10 @@
     <header class="max-w-6xl mx-auto px-4 pt-12 pb-6">
         <div class="text-center">
             <span class="inline-block px-3 py-1 mb-3 text-xs font-bold tracking-wider uppercase text-sky-700 bg-sky-100 rounded-full border border-sky-200">
-                Version 1.03
+                Version 1.04
             </span>
             <h1 class="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-sky-600 to-amber-500 mb-4 pb-2">
-                The History of Biological Electron Microscopy
+                The History of Cryo-EM
             </h1>
             <p class="text-base md:text-xl text-slate-500 max-w-3xl mx-auto leading-relaxed">
                 Tracing foundational discoveries, negative staining, pioneering software suites, phase plates, and the 2012–2013 Resolution Revolution.
@@ -788,6 +788,17 @@
             },
             {
                 year: "2012",
+                title: "Yang, Asturias & Penczek: ISAC (2D Clustering)",
+                desc: "Zhengfan Yang, Jia Fang, Johnathan Chittuluru, Francisco J. Asturias, and Pawel A. Penczek introduced ISAC (Iterative Stable Alignment and Clustering), a 2D image-clustering method that uses repeated stability and reproducibility testing to eliminate heterogeneous or erroneous classes in single-particle cryo-EM.",
+                type: "software",
+                refs: [
+                    { label: "PMID: 22325773", url: "https://pubmed.ncbi.nlm.nih.gov/22325773/" },
+                    { label: "PMCID: PMC3426367", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC3426367/" },
+                    { label: "DOI: 10.1016/j.str.2011.12.007", url: "https://doi.org/10.1016/j.str.2011.12.007" }
+                ]
+            },
+            {
+                year: "2012",
                 title: "Scheres: RELION is Released",
                 desc: "Sjors Scheres released RELION (REgularised LIkelihood OptimisatioN), applying an empirical Bayesian framework that automated noise-model estimation, prevented overfitting, and resolved conformational heterogeneity—the statistical pillar of the Resolution Revolution.",
                 type: "resolution",
@@ -833,13 +844,16 @@
             },
             {
                 year: "2013",
-                title: "Cheng & Julius: TRPV1 Ion Channel Structure",
-                desc: "Maofu Liao, Erhu Cao, David Julius, and Yifan Cheng determined the 3.4 Å structure of the mammalian TRPV1 ion channel without crystallization, demonstrating that single-particle cryo-EM could solve de novo atomic structures of dynamic integral membrane proteins.",
+                title: "Cheng & Julius: TRPV1 Ion Channel Structures",
+                desc: "In two landmark back-to-back Nature papers, Maofu Liao, Erhu Cao, David Julius, and Yifan Cheng determined the 3.4 Å apo structure of the mammalian TRPV1 ion channel without crystallization and captured TRPV1 in distinct ligand-bound conformations, revealing channel activation mechanisms and proving single-particle cryo-EM could solve de novo atomic structures of dynamic integral membrane proteins.",
                 type: "standard",
                 refs: [
                     { label: "PMID: 24305160", url: "https://pubmed.ncbi.nlm.nih.gov/24305160/" },
                     { label: "PMCID: PMC4078027", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC4078027/" },
-                    { label: "DOI: 10.1038/nature12822", url: "https://doi.org/10.1038/nature12822" }
+                    { label: "DOI: 10.1038/nature12822", url: "https://doi.org/10.1038/nature12822" },
+                    { label: "PMID: 24305161", url: "https://pubmed.ncbi.nlm.nih.gov/24305161/" },
+                    { label: "PMCID: PMC4023639", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC4023639/" },
+                    { label: "DOI: 10.1038/nature12823", url: "https://doi.org/10.1038/nature12823" }
                 ]
             },
             {
@@ -889,6 +903,16 @@
             },
             {
                 year: "2017",
+                title: "Punjani, Rubinstein, Fleet & Brubaker: cryoSPARC",
+                desc: "Ali Punjani, John L. Rubinstein, David J. Fleet, and Marcus A. Brubaker introduced cryoSPARC, combining stochastic gradient descent (SGD) with branch-and-bound maximum-likelihood optimization for rapid, unsupervised ab initio 3D reconstruction, 3D classification, and high-resolution refinement.",
+                type: "software",
+                refs: [
+                    { label: "PMID: 28165473", url: "https://pubmed.ncbi.nlm.nih.gov/28165473/" },
+                    { label: "DOI: 10.1038/nmeth.4169", url: "https://doi.org/10.1038/nmeth.4169" }
+                ]
+            },
+            {
+                year: "2017",
                 title: "Frank, Henderson & Dubochet: Nobel Prize in Chemistry",
                 desc: "The Nobel Prize in Chemistry was jointly awarded to Jacques Dubochet, Joachim Frank, and Richard Henderson for developing cryo-electron microscopy for the high-resolution structure determination of biomolecules in solution.",
                 type: "highlight",
@@ -917,6 +941,17 @@
                     { label: "PMID: 38011573", url: "https://pubmed.ncbi.nlm.nih.gov/38011573/" },
                     { label: "PMCID: PMC10710074", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10710074/" },
                     { label: "DOI: 10.1073/pnas.2312905120", url: "https://doi.org/10.1073/pnas.2312905120" }
+                ]
+            },
+            {
+                year: "2024",
+                title: "Jamali, Kimanius & Scheres: ModelAngelo",
+                desc: "Kiarash Jamali, Lukas Käll, Rui Zhang, Alan Brown, Dari Kimanius, and Sjors H. W. Scheres introduced ModelAngelo, a graph neural network (GNN) machine-learning tool for automated atomic model building of proteins and nucleic acids and de novo protein identification directly from cryo-EM maps.",
+                type: "software",
+                refs: [
+                    { label: "PMID: 38408488", url: "https://pubmed.ncbi.nlm.nih.gov/38408488/" },
+                    { label: "PMCID: PMC11006616", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC11006616/" },
+                    { label: "DOI: 10.1038/s41586-024-07215-4", url: "https://doi.org/10.1038/s41586-024-07215-4" }
                 ]
             },
             {
