@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timeline of Biological Electron Microscopy (v1.06)</title>
+    <title>Timeline of Biological Electron Microscopy (v1.09)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .glass-card {
@@ -334,7 +334,7 @@
     <header class="max-w-6xl mx-auto px-4 pt-12 pb-6">
         <div class="text-center">
             <span class="inline-block px-3 py-1 mb-3 text-xs font-bold tracking-wider uppercase text-sky-700 bg-sky-100 rounded-full border border-sky-200">
-                Version 1.06
+                Version 1.09
             </span>
             <h1 class="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-sky-600 to-amber-500 mb-4 pb-2">
                 Timeline of Biological Electron Microscopy
@@ -411,7 +411,7 @@
     <!-- Main Timeline Area -->
     <main class="w-full py-8 md:py-10">
         <!-- Vertical Container -->
-        <div id="vertical-wrapper" class="max-w-6xl mx-auto px-4">
+        <div id="vertical-wrapper" class="hidden max-w-6xl mx-auto px-4">
             <div class="relative w-full pb-20">
                 <div class="timeline-line hidden md:block"></div>
                 <div class="timeline-line block md:hidden"></div>
@@ -420,7 +420,7 @@
         </div>
 
         <!-- Horizontal Container -->
-        <div id="horizontal-wrapper" class="hidden max-w-[98vw] mx-auto px-2 md:px-6">
+        <div id="horizontal-wrapper" class="max-w-[98vw] mx-auto px-2 md:px-6">
             <div class="flex items-center justify-between mb-3 px-2 gap-2">
                 <span class="text-xs font-medium text-slate-500">
                     <span class="hidden md:inline">Tip: Scroll horizontally or use the arrows to explore chronologically.</span>
@@ -453,6 +453,15 @@
     <script>
         const eventsData = [
             {
+                year: "1898",
+                title: "Gustav Tammann: Amorphous Glassy Solidification",
+                desc: "Starting in 1898, Gustav Tammann demonstrated that molecules of carbon compounds can be solidified into an amorphous, glass-like state without rearranging into crystals, laying foundational physical-chemistry concepts for vitrification.",
+                type: "standard",
+                refs: [
+                    { label: "DOI: 10.1515/zpch-1898-2526", url: "https://doi.org/10.1515/zpch-1898-2526" }
+                ]
+            },
+            {
                 year: "1931",
                 title: "Ruska & Knoll: Invention of Electron Microscope",
                 desc: "Max Knoll and Ernst Ruska co-invented and experimentally demonstrated the first transmission electron microscope using magnetic lenses, establishing the physical foundation for sub-optical imaging.",
@@ -467,7 +476,7 @@
                 desc: "Ladislaus Marton demonstrated early electron microscopy of biological objects, noting their rapid destruction under intense electron bombardment and proposing specimen cooling or heavy-metal impregnation to preserve structure.",
                 type: "standard",
                 refs: [
-                    { label: "DOI: 10.1038/133911a0", url: "https://doi.org/10.1038/133911a0" }
+                    { label: "DOI: 10.1038/133911b0", url: "https://doi.org/10.1038/133911b0" }
                 ]
             },
             {
@@ -476,8 +485,18 @@
                 desc: "Basile Luyet proposed that ultra-rapid cooling could solidify aqueous solutions directly into an amorphous, glass-like (vitrified) state, avoiding the destructive formation of crystalline ice.",
                 type: "standard",
                 refs: [
+                    { label: "DOI: 10.1126/science.85.2195.106.a", url: "https://doi.org/10.1126/science.85.2195.106.a" },
                     { label: "PMID: 16787831", url: "https://pubmed.ncbi.nlm.nih.gov/16787831/" },
                     { label: "DOI: 10.1016/j.tmrv.2006.03.004", url: "https://doi.org/10.1016/j.tmrv.2006.03.004" }
+                ]
+            },
+            {
+                year: "1937–1940",
+                title: "Luyet & Gehenio: Life and Death at Low Temperatures",
+                desc: "Between 1937 and 1940, Basile Luyet and P. M. Gehenio surveyed two centuries of global cryobiology literature, producing a 34-page bibliography alongside their 295-page monograph Life and Death at Low Temperatures summarizing current knowledge and open questions in low-temperature biology.",
+                type: "standard",
+                refs: [
+                    { label: "DOI: 10.5962/bhl.title.6570", url: "https://doi.org/10.5962/bhl.title.6570" }
                 ]
             },
             {
@@ -506,11 +525,11 @@
             {
                 year: "1954",
                 title: "Siemens Elmiskop I",
-                desc: "Demonstrated at the 1954 London Congress and installed at the Cavendish Laboratory in Cambridge, the Siemens Elmiskop I delivered a major leap in resolving power, exposing granulation artifacts in metal-shadowed specimens and motivating superior specimen preparation.",
+                desc: "Developed by Ernst Ruska and colleagues at Siemens & Halske and introduced in 1954, the Elmiskop I was the first mass-produced high-resolution commercial transmission electron microscope. Featuring a double-condenser lens system and achieving sub-nanometer (~10 Å) resolving power, it became the foundational workhorse instrument for biological electron microscopy worldwide.",
                 type: "standard",
                 refs: [
-                    { label: "DOI: 10.1016/0739-6260(91)90051-Z", url: "https://doi.org/10.1016/0739-6260(91)90051-Z" },
-                    { label: "PMID: 3322421", url: "https://pubmed.ncbi.nlm.nih.gov/3322421/" }
+                    { label: "PMID: 3322421", url: "https://pubmed.ncbi.nlm.nih.gov/3322421/" },
+                    { label: "DOI: 10.1007/BF01127674", url: "https://doi.org/10.1007/BF01127674" }
                 ]
             },
             {
@@ -581,6 +600,15 @@
                 refs: [
                     { label: "PMID: 1236957", url: "https://pubmed.ncbi.nlm.nih.gov/1236957/" },
                     { label: "DOI: 10.1016/0022-2836(75)90212-0", url: "https://doi.org/10.1016/0022-2836(75)90212-0" }
+                ]
+            },
+            {
+                year: "1975",
+                title: "Frank: Averaging Low-Dose Images of Non-Periodic Objects",
+                desc: "Joachim Frank proposed that low-dose electron micrographs of individual, non-periodic biological macromolecules could be computationally aligned and averaged to overcome radiation-damage noise limits, establishing the conceptual foundation of single-particle analysis.",
+                type: "software",
+                refs: [
+                    { label: "DOI: 10.1016/S0304-3991(75)80020-9", url: "https://doi.org/10.1016/S0304-3991(75)80020-9" }
                 ]
             },
             {
@@ -757,7 +785,7 @@
                 year: "2005",
                 title: "Leginon, Automated Data Collection Becomes Available",
                 desc: "Christian Suloway, Clinton Potter, Bridget Carragher, and colleagues introduced the Leginon system for automated, multi-scale target selection and high-throughput acquisition of single-particle micrographs.",
-                type: "standard",
+                type: "software",
                 refs: [
                     { label: "PMID: 15890530", url: "https://pubmed.ncbi.nlm.nih.gov/15890530/" },
                     { label: "DOI: 10.1016/j.jsb.2005.03.010", url: "https://doi.org/10.1016/j.jsb.2005.03.010" }
@@ -771,6 +799,17 @@
                 refs: [
                     { label: "PMID: 16859925", url: "https://pubmed.ncbi.nlm.nih.gov/16859925/" },
                     { label: "DOI: 10.1016/j.jsb.2006.05.009", url: "https://doi.org/10.1016/j.jsb.2006.05.009" }
+                ]
+            },
+            {
+                year: "2008",
+                title: "Scheres, Sorzano, Carazo & Marabini: XMIPP",
+                desc: "Sjors H. W. Scheres, Rafael Núñez-Ramírez, Carlos O. S. Sorzano, José-María Carazo, and Roberto Marabini published standardized single-particle image-processing protocols for XMIPP, an extensible open-source software suite emphasizing maximum-likelihood refinement, self-organizing maps, and handling of structurally heterogeneous cryo-EM datasets.",
+                type: "software",
+                refs: [
+                    { label: "PMID: 18536645", url: "https://pubmed.ncbi.nlm.nih.gov/18536645/" },
+                    { label: "PMCID: PMC2778070", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC2778070/" },
+                    { label: "DOI: 10.1038/nprot.2008.62", url: "https://doi.org/10.1038/nprot.2008.62" }
                 ]
             },
             {
@@ -833,13 +872,15 @@
                 ]
             },
             {
-                year: "2013",
+                year: "2013–2014",
                 title: "MicroED: 3D Electron Crystallography of Nanocrystals",
-                desc: "Dan Shi, Brent Nannenga, Michael Iadanza, and Tamir Gonen established MicroED (Micro-electron diffraction), demonstrating that 3D electron diffraction from vanishingly small protein nanocrystals embedded in vitreous ice could rapidly determine atomic structures.",
+                desc: "Dan Shi, Brent Nannenga, Michael Iadanza, Andrew Leslie, and Tamir Gonen established MicroED (Micro-electron diffraction) and continuous-rotation data collection, demonstrating that 3D electron diffraction from vanishingly small protein nanocrystals embedded in vitreous ice could rapidly determine atomic structures.",
                 type: "standard",
                 refs: [
                     { label: "PMID: 24252878", url: "https://pubmed.ncbi.nlm.nih.gov/24252878/" },
-                    { label: "PMCID: PMC3831942", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC3831942/" }
+                    { label: "PMCID: PMC3831942", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC3831942/" },
+                    { label: "PMCID: PMC4149488", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC4149488/" },
+                    { label: "DOI: 10.1038/nmeth.3043", url: "https://doi.org/10.1038/nmeth.3043" }
                 ]
             },
             {
@@ -854,6 +895,19 @@
                     { label: "PMID: 24305161", url: "https://pubmed.ncbi.nlm.nih.gov/24305161/" },
                     { label: "PMCID: PMC4023639", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC4023639/" },
                     { label: "DOI: 10.1038/nature12823", url: "https://doi.org/10.1038/nature12823" }
+                ]
+            },
+            {
+                year: "2007–2013",
+                title: "Marko, Baumeister, Plitzko & Villa et al.: Cryo-FIB Milling",
+                desc: "Pioneered by Michael Marko and colleagues (2007) and developed for cellular cryo-electron tomography by Alexander Rigort, Michael Hayles, Elizabeth Villa, Jürgen Plitzko, and Wolfgang Baumeister (2010–2013), cryo-focused ion beam (cryo-FIB) micromachining enabled artifact-free thinning of vitrified cells into electron-transparent lamellae for in situ structural biology.",
+                type: "standard",
+                refs: [
+                    { label: "DOI: 10.1038/nmeth1014", url: "https://doi.org/10.1038/nmeth1014" },
+                    { label: "DOI: 10.1016/j.jsb.2010.02.011", url: "https://doi.org/10.1016/j.jsb.2010.02.011" },
+                    { label: "DOI: 10.1016/j.jsb.2010.07.004", url: "https://doi.org/10.1016/j.jsb.2010.07.004" },
+                    { label: "DOI: 10.1073/pnas.1201333109", url: "https://www.pnas.org/doi/10.1073/pnas.1201333109" },
+                    { label: "DOI: 10.1016/j.sbi.2013.08.006", url: "https://doi.org/10.1016/j.sbi.2013.08.006" }
                 ]
             },
             {
@@ -951,6 +1005,15 @@
                 ]
             },
             {
+                year: "2021",
+                title: "Zhong, Bepler, Berger & Davis: cryoDRGN",
+                desc: "Ellen D. Zhong, Tristan Bepler, Bonnie Berger, and Joseph H. Davis introduced cryoDRGN, a deep neural network framework that reconstructs continuous conformational heterogeneity and discrete structural states directly from single-particle cryo-EM images.",
+                type: "software",
+                refs: [
+                    { label: "DOI: 10.1038/s41592-020-01054-7", url: "https://doi.org/10.1038/s41592-020-01054-7" }
+                ]
+            },
+            {
                 year: "2023",
                 title: "McMullan, Henderson & Russo: Cryo-EM at 100 keV",
                 desc: "Greg McMullan, Richard Henderson, Christopher J. Russo, and colleagues ('Structure determination by cryoEM at 100 keV') demonstrated high-resolution single-particle structure determination of 11 diverse biomolecules using a purpose-built, lower-cost 100 keV cryo-electron microscope with a Schottky FEG and dedicated hybrid-pixel detector.",
@@ -970,6 +1033,17 @@
                     { label: "PMID: 38408488", url: "https://pubmed.ncbi.nlm.nih.gov/38408488/" },
                     { label: "PMCID: PMC11006616", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC11006616/" },
                     { label: "DOI: 10.1038/s41586-024-07215-4", url: "https://doi.org/10.1038/s41586-024-07215-4" }
+                ]
+            },
+            {
+                year: "2024",
+                title: "Küçükoğlu, Stahlberg et al.: Low-Dose Cryo-Electron Ptychography",
+                desc: "Berk Küçükoğlu, Henning Stahlberg, and colleagues demonstrated low-dose 4D-STEM cryo-electron ptychography on frozen-hydrated proteins (including apoferritin, bacteriophage Phi92, and TMV), achieving sub-nanometer 3D protein reconstructions and opening a high-SNR coherent diffractive imaging route for smaller macromolecules and thick vitrified cellular specimens.",
+                type: "standard",
+                refs: [
+                    { label: "PMID: 39277607", url: "https://pubmed.ncbi.nlm.nih.gov/39277607/" },
+                    { label: "PMCID: PMC11401879", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC11401879/" },
+                    { label: "DOI: 10.1038/s41467-024-52403-5", url: "https://doi.org/10.1038/s41467-024-52403-5" }
                 ]
             },
             {
@@ -995,7 +1069,7 @@
             }
         ];
 
-        let currentOrientation = 'vertical';
+        let currentOrientation = 'horizontal';
         let currentCategory = 'all';
         let currentSearch = '';
 
@@ -1258,7 +1332,7 @@
         }, { passive: false });
 
         window.addEventListener("scroll", reveal);
-        setOrientation('vertical');
+        setOrientation('horizontal');
     </script>
 </body>
 </html>
